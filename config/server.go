@@ -1,4 +1,4 @@
-package server
+package config
 
 import (
 	"log"
@@ -14,7 +14,7 @@ type Server struct {
 	server *http.Server
 }
 
-func New(host string, port string, router *mux.Router) (*Server, error) { 
+func NewServer(host string, port string, router *mux.Router) (*Server, error) { 
 	// CORS config
 	corsOptions := cors.New(cors.Options{
 		AllowedOrigins: []string{

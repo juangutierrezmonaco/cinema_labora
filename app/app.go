@@ -6,9 +6,8 @@ import (
 	"os/signal"
 
 	"github.com/gorilla/mux"
-	"github.com/labora/labora-golang/cinema_labora/database"
+	"github.com/labora/labora-golang/cinema_labora/config"
 	"github.com/labora/labora-golang/cinema_labora/routes"
-	"github.com/labora/labora-golang/cinema_labora/server"
 	"github.com/labora/labora-golang/cinema_labora/util"
 )
 
@@ -22,7 +21,7 @@ func Init() {
 
 	// Create server
 	router := mux.NewRouter()
-	serv, err := server.New(envData.ServerData.Host, envData.ServerData.Port, router)
+	serv, err := config.NewServer(envData.ServerData.Host, envData.ServerData.Port, router)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,7 +30,7 @@ func Init() {
 	go serv.Start()
 
 	// Init DB
-	database.Init()
+	config.InitDb()
 
 	// Routes
 	routes.BuildRoutes(router)

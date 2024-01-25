@@ -1,4 +1,4 @@
-package database
+package config
 
 import (
 	"database/sql"
@@ -9,7 +9,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func Init() {
+func InitDb() {
 	fmt.Printf("Initiating connection to the database...\n")
 	makeDbConnection()
 }

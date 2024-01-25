@@ -29,13 +29,15 @@ CREATE TABLE IF NOT EXISTS theater (
 CREATE TABLE IF NOT EXISTS screening (
   id SERIAL PRIMARY KEY,
   name VARCHAR(20),
-  movie_id INT
+  movie_id INT,
   theater_id INT REFERENCES theater(id),
   available_seats INT,
   taken_seats VARCHAR(5)[],
   showtime TIMESTAMP,
   language VARCHAR(10),
-  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  reviews
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL,
 );
 
 CREATE TABLE IF NOT EXISTS ticket (
@@ -46,11 +48,14 @@ CREATE TABLE IF NOT EXISTS ticket (
 
 CREATE TABLE IF NOT EXISTS user (
   id SERIAL PRIMARY KEY,
-  first_name VARCHAR(30) NOT NULL,
-  last_name VARCHAR(30) NOT NULL,
-  email VARCHAR(50) NOT NULL,
+  first_name VARCHAR(30),
+  last_name VARCHAR(30),
+  email VARCHAR(50) NOT NULL UNIQUE,
   password VARCHAR(50) NOT NULL,
   gender CHAR,
-  ticket_ids INT[] REFERENCES ticket(id),
-  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  picture_url VARCHAR(256) NOT NULL,
+  ticket_ids INT[],
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL,
+  FOREIGN KEY (ticket_ids) REFERENCES ticket(id) ON DELETE SET NULL
 );
