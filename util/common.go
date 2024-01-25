@@ -70,7 +70,7 @@ func PasswordMatch(password string, passwordHash string) bool {
 	return err == nil
 }
 
-func parseTime(unixTime int64) string {
+func ParseTime(unixTime int64) string {
 	time := time.Unix(unixTime, 0)
 	timeStr := time.Format("02-01-2006 15:04:05")
 	return timeStr

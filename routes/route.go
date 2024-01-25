@@ -15,8 +15,10 @@ func BuildRoutes(router *mux.Router) {
 
 	// Screening Routes
 	router.HandleFunc("/api/screening", controllers.CreateScreening).Methods("POST")
-	router.HandleFunc("/api/theater", controllers.GetScreenings).Methods("GET")
-	router.HandleFunc("/api/theater/{id}", controllers.GetTheaters).Methods("GET")
-	router.HandleFunc("/api/theater/{id}", controllers.UpdateTheater).Methods("PUT")
-	router.HandleFunc("/api/theater/{id}", controllers.DeleteTheater).Methods("DELETE")
+	router.HandleFunc("/api/screening", controllers.GetScreenings).Methods("GET")
+	router.HandleFunc("/api/screening/{id}", controllers.GetScreeningByID).Methods("GET")
+	router.HandleFunc("/api/screening/movie/{id}", controllers.GetScreeningByMovieIdOrTheaterId).Methods("GET")
+	router.HandleFunc("/api/screening/theater/{id}", controllers.GetScreeningByMovieIdOrTheaterId).Methods("GET")
+	router.HandleFunc("/api/screening/{id}", controllers.UpdateScreening).Methods("PUT")
+	router.HandleFunc("/api/screening/{id}", controllers.DeleteScreening).Methods("DELETE")
 }
