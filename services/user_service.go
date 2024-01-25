@@ -107,10 +107,6 @@ func GetUserByID(id int) (*models.User, error) {
 func buildUpdateUserQuery(updatedUser models.User) (string, error) {
 	query := "UPDATE \"user\" SET "
 	paramsSize := 1
-	if updatedUser.ID != nil {
-		query += fmt.Sprintf("id = $%d, ", paramsSize)
-		paramsSize++
-	}
 	if updatedUser.FirstName != nil {
 		query += fmt.Sprintf("first_name = $%d, ", paramsSize)
 		paramsSize++
@@ -135,10 +131,6 @@ func buildUpdateUserQuery(updatedUser models.User) (string, error) {
 		query += fmt.Sprintf("picture_url = $%d, ", paramsSize)
 		paramsSize++
 	}
-	if updatedUser.CreatedAt != nil {
-		query += fmt.Sprintf("created_at = $%d, ", paramsSize)
-		paramsSize++
-	}
 	if paramsSize == 1 {
 		return "", fmt.Errorf("You must modify at least one field.")
 	}
@@ -152,9 +144,6 @@ func buildUpdateUserQuery(updatedUser models.User) (string, error) {
 func getNonNullUserFields(user models.User) []interface{} {
 	var nonNullFields []interface{}
 
-	if user.ID != nil {
-		nonNullFields = append(nonNullFields, user.ID)
-	}
 	if user.FirstName != nil {
 		nonNullFields = append(nonNullFields, user.FirstName)
 	}
@@ -172,9 +161,6 @@ func getNonNullUserFields(user models.User) []interface{} {
 	}
 	if user.PictureURL != nil {
 		nonNullFields = append(nonNullFields, user.PictureURL)
-	}
-	if user.CreatedAt != nil {
-		nonNullFields = append(nonNullFields, user.CreatedAt)
 	}
 	nonNullFields = append(nonNullFields, time.Now().Unix())
 

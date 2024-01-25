@@ -153,7 +153,7 @@ func GetScreeningByID(id int) (*models.Screening, error) {
 }
 
 func GetScreeningByMovieIdOrTheaterId(id int, isSearchingByMovie bool) (*models.Screening, error) {
-	var query string 
+	var query string
 	if isSearchingByMovie {
 		query = "SELECT * FROM screening WHERE movie_id = $1"
 	} else {
@@ -184,10 +184,6 @@ func GetScreeningByMovieIdOrTheaterId(id int, isSearchingByMovie bool) (*models.
 func buildUpdateScreeningQuery(updatedScreening models.Screening) (string, error) {
 	query := "UPDATE screening SET "
 	paramsSize := 1
-	if updatedScreening.ID != nil {
-		query += fmt.Sprintf("id = $%d, ", paramsSize)
-		paramsSize++
-	}
 	if updatedScreening.Name != nil {
 		query += fmt.Sprintf("name = $%d, ", paramsSize)
 		paramsSize++
@@ -224,10 +220,6 @@ func buildUpdateScreeningQuery(updatedScreening models.Screening) (string, error
 		query += fmt.Sprintf("views_count = $%d, ", paramsSize)
 		paramsSize++
 	}
-	if updatedScreening.CreatedAt != nil {
-		query += fmt.Sprintf("created_at = $%d, ", paramsSize)
-		paramsSize++
-	}
 	if paramsSize == 1 {
 		return "", fmt.Errorf("You must modify at least one field.")
 	}
@@ -241,9 +233,6 @@ func buildUpdateScreeningQuery(updatedScreening models.Screening) (string, error
 func getNonNullScreeningFields(screening models.Screening) []interface{} {
 	var nonNullFields []interface{}
 
-	if screening.ID != nil {
-		nonNullFields = append(nonNullFields, screening.ID)
-	}
 	if screening.Name != nil {
 		nonNullFields = append(nonNullFields, screening.Name)
 	}
@@ -270,9 +259,6 @@ func getNonNullScreeningFields(screening models.Screening) []interface{} {
 	}
 	if screening.ViewsCount != nil {
 		nonNullFields = append(nonNullFields, screening.ViewsCount)
-	}
-	if screening.CreatedAt != nil {
-		nonNullFields = append(nonNullFields, screening.CreatedAt)
 	}
 	nonNullFields = append(nonNullFields, time.Now().Unix())
 

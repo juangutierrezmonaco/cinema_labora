@@ -105,10 +105,6 @@ func GetCommentByID(id int) (*models.Comment, error) {
 func buildUpdateCommentQuery(updatedComment models.Comment) (string, error) {
 	query := "UPDATE comment SET "
 	paramsSize := 1
-	if updatedComment.ID != nil {
-		query += fmt.Sprintf("id = $%d, ", paramsSize)
-		paramsSize++
-	}
 	if updatedComment.UserID != nil {
 		query += fmt.Sprintf("user_id = $%d, ", paramsSize)
 		paramsSize++
@@ -119,10 +115,6 @@ func buildUpdateCommentQuery(updatedComment models.Comment) (string, error) {
 	}
 	if updatedComment.Content != nil {
 		query += fmt.Sprintf("content = $%d, ", paramsSize)
-		paramsSize++
-	}
-	if updatedComment.CreatedAt != nil {
-		query += fmt.Sprintf("created_at = $%d, ", paramsSize)
 		paramsSize++
 	}
 	if paramsSize == 1 {
@@ -138,9 +130,6 @@ func buildUpdateCommentQuery(updatedComment models.Comment) (string, error) {
 func getNonNullCommentFields(comment models.Comment) []interface{} {
 	var nonNullFields []interface{}
 
-	if comment.ID != nil {
-		nonNullFields = append(nonNullFields, comment.ID)
-	}
 	if comment.UserID != nil {
 		nonNullFields = append(nonNullFields, comment.UserID)
 	}
@@ -149,9 +138,6 @@ func getNonNullCommentFields(comment models.Comment) []interface{} {
 	}
 	if comment.Content != nil {
 		nonNullFields = append(nonNullFields, comment.Content)
-	}
-	if comment.CreatedAt != nil {
-		nonNullFields = append(nonNullFields, comment.CreatedAt)
 	}
 	nonNullFields = append(nonNullFields, time.Now().Unix())
 

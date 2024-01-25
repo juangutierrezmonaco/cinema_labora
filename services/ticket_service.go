@@ -105,10 +105,6 @@ func GetTicketByID(id int) (*models.Ticket, error) {
 func buildUpdateTicketQuery(updatedTicket models.Ticket) (string, error) {
 	query := "UPDATE ticket SET "
 	paramsSize := 1
-	if updatedTicket.ID != nil {
-		query += fmt.Sprintf("id = $%d, ", paramsSize)
-		paramsSize++
-	}
 	if updatedTicket.PickupID != nil {
 		query += fmt.Sprintf("pickup_id = $%d, ", paramsSize)
 		paramsSize++
@@ -119,10 +115,6 @@ func buildUpdateTicketQuery(updatedTicket models.Ticket) (string, error) {
 	}
 	if updatedTicket.ScreeningID != nil {
 		query += fmt.Sprintf("screening_id = $%d, ", paramsSize)
-		paramsSize++
-	}
-	if updatedTicket.CreatedAt != nil {
-		query += fmt.Sprintf("created_at = $%d, ", paramsSize)
 		paramsSize++
 	}
 	if paramsSize == 1 {
@@ -136,9 +128,6 @@ func buildUpdateTicketQuery(updatedTicket models.Ticket) (string, error) {
 func getNonNullTicketFields(ticket models.Ticket) []interface{} {
 	var nonNullFields []interface{}
 
-	if ticket.ID != nil {
-		nonNullFields = append(nonNullFields, ticket.ID)
-	}
 	if ticket.PickupID != nil {
 		nonNullFields = append(nonNullFields, ticket.PickupID)
 	}
@@ -147,9 +136,6 @@ func getNonNullTicketFields(ticket models.Ticket) []interface{} {
 	}
 	if ticket.ScreeningID != nil {
 		nonNullFields = append(nonNullFields, ticket.ScreeningID)
-	}
-	if ticket.CreatedAt != nil {
-		nonNullFields = append(nonNullFields, ticket.CreatedAt)
 	}
 
 	return nonNullFields

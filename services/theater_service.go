@@ -106,10 +106,6 @@ func GetTheaterByID(id int) (*models.Theater, error) {
 func buildUpdateTheaterQuery(updatedTheater models.Theater) (string, error) {
 	query := "UPDATE theater SET "
 	paramsSize := 1
-	if updatedTheater.ID != nil {
-		query += fmt.Sprintf("id = $%d, ", paramsSize)
-		paramsSize++
-	}
 	if updatedTheater.Name != nil {
 		query += fmt.Sprintf("name = $%d, ", paramsSize)
 		paramsSize++
@@ -126,10 +122,6 @@ func buildUpdateTheaterQuery(updatedTheater models.Theater) (string, error) {
 		query += fmt.Sprintf("last_column = $%d, ", paramsSize)
 		paramsSize++
 	}
-	if updatedTheater.CreatedAt != nil {
-		query += fmt.Sprintf("created_at = $%d, ", paramsSize)
-		paramsSize++
-	}
 	if paramsSize == 1 {
 		return "", fmt.Errorf("You must modify at least one field.")
 	}
@@ -141,9 +133,6 @@ func buildUpdateTheaterQuery(updatedTheater models.Theater) (string, error) {
 func getNonNullTheaterFields(theater models.Theater) []interface{} {
 	var nonNullFields []interface{}
 
-	if theater.ID != nil {
-		nonNullFields = append(nonNullFields, theater.ID)
-	}
 	if theater.Name != nil {
 		nonNullFields = append(nonNullFields, theater.Name)
 	}
