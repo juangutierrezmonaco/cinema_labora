@@ -27,8 +27,9 @@ type MovieDbData struct {
 }
 
 type AllEnvData struct {
-	DbData     DbData
-	ServerData ServerData
+	DbData      DbData
+	ServerData  ServerData
+	MovieDbData MovieDbData
 }
 
 var EnvData AllEnvData
@@ -50,6 +51,9 @@ func LoadEnv() error {
 		ServerData: ServerData{
 			Host: os.Getenv("HOST"),
 			Port: os.Getenv("PORT"),
+		},
+		MovieDbData: MovieDbData{
+			ApiKey: os.Getenv("TMDB_API_KEY"),
 		},
 	}
 

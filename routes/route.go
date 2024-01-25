@@ -42,4 +42,8 @@ func BuildRoutes(router *mux.Router) {
 	router.HandleFunc("/api/ticket/{id}", controllers.GetTicketByID).Methods("GET")
 	router.HandleFunc("/api/ticket/{id}", controllers.UpdateTicket).Methods("PUT")
 	router.HandleFunc("/api/ticket/{id}", controllers.DeleteTicket).Methods("DELETE")
+
+	// Movie Routes
+	router.HandleFunc("/api/movie", controllers.GetMoviesByTitleAndOverview).Methods("GET")
+	router.HandleFunc("/api/movie/{id}", controllers.GetTMDBMovieDetails).Methods("GET")
 }

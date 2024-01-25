@@ -56,3 +56,9 @@ CREATE TABLE IF NOT EXISTS comment (
   created_at bigint NOT NULL,
   updated_at bigint NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS movie_count (
+  movie_id INT NOT NULL,
+  views_count INT DEFAULT 0,
+  updated_at bigint NOT NULL
+);
