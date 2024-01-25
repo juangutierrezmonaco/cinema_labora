@@ -1,17 +1,15 @@
 package routes
 
 import (
-	"net/http"
-
 	"github.com/gorilla/mux"
+	"github.com/labora/labora-golang/cinema_labora/controllers"
 )
 
 func BuildRoutes(router *mux.Router) {
-	// Routes
-	router.HandleFunc("/api/movie", func(w http.ResponseWriter, r *http.Request) {}).Methods("POST")
-	router.HandleFunc("/api/movie/{id}", func(w http.ResponseWriter, r *http.Request) {}).Methods("DELETE")
-	router.HandleFunc("/api/movie/{id}", func(w http.ResponseWriter, r *http.Request) {}).Methods("PUT")
-	router.HandleFunc("/api/movie", func(w http.ResponseWriter, r *http.Request) {}).Methods("GET")
-	router.HandleFunc("/api/movie/{id}", func(w http.ResponseWriter, r *http.Request) {}).Methods("GET")
-	router.HandleFunc("/api/movie", func(w http.ResponseWriter, r *http.Request) {}).Methods("GET")
+	// Theater Routes
+	router.HandleFunc("/api/theater", controllers.CreateTheater).Methods("POST")
+	router.HandleFunc("/api/theater", controllers.GetAllTheaters).Methods("GET")
+	router.HandleFunc("/api/theater/{id}", controllers.GetAllTheaters).Methods("GET")
+	router.HandleFunc("/api/theater/{id}", controllers.UpdateTheater).Methods("PUT")
+	router.HandleFunc("/api/theater/{id}", controllers.DeleteTheater).Methods("DELETE")
 }
