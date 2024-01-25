@@ -1,49 +1,43 @@
 CREATE DATABASE cinema_labora;
 
-CREATE TABLE IF NOT EXISTS movie (
-  id SERIAL PRIMARY KEY,
-  title VARCHAR(100) NOT NULL
-  adult BOOLEAN,
-  genres VARCHAR(50)[],
-  release_date DATE NOT NULL,
-  poster_path VARCHAR(100),
-  imdb_id VARCHAR(50),
-  original_language VARCHAR(10),
-  original_title VARCHAR(100),
-  overview VARCHAR(300),
-  popularity DECIMAL(10,2),
-  runtime DECIMAL(10,2),
-  status VARCHAR(50),
-  tagline VARCHAR(100)
-);
-
 CREATE TABLE IF NOT EXISTS theater (
   id SERIAL PRIMARY KEY,
   name VARCHAR(30) NOT NULL,
   capacity INT NOT NULL,
   last_row VARCHAR(2),
   last_column INT,
-  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS screening (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(20),
-  movie_id INT,
+  name VARCHAR(20) INT NOT NULL,
+  movie_id INT NOT NULL,
   theater_id INT REFERENCES theater(id),
-  available_seats INT,
-  taken_seats VARCHAR(5)[],
-  showtime TIMESTAMP,
-  language VARCHAR(10),
-  reviews
-  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  available_seats INT NOT NULL,
+  taken_seats VARCHAR(5) [],
+  showtime TIMESTAMP NOT NULL,
+  price DECIMAL(10, 2) NOT NULL,
+  language VARCHAR(10),,
+  views_count INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL,
 );
 
 CREATE TABLE IF NOT EXISTS ticket (
   id SERIAL PRIMARY KEY,
   pickup_id VARCHAR(10),
-  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  user_id INT REFERENCES user(id),
+  screening_id INT REFERENCES screening(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS comment (
+  id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES user(id),
+  movie_id INT,
+  content TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS user (
@@ -54,8 +48,10 @@ CREATE TABLE IF NOT EXISTS user (
   password VARCHAR(50) NOT NULL,
   gender CHAR,
   picture_url VARCHAR(256) NOT NULL,
-  ticket_ids INT[],
-  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  ticket_ids INT [],
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL,
-  FOREIGN KEY (ticket_ids) REFERENCES ticket(id) ON DELETE SET NULL
+  FOREIGN KEY (ticket_ids) REFERENCES ticket(id) ON DELETE
+  SET
+    NULL
 );
