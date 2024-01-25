@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/labora/labora-golang/cinema_labora/config"
 	"github.com/labora/labora-golang/cinema_labora/models"
@@ -14,14 +15,15 @@ func CreateTheater(newTheater models.Theater) (int, error) {
 		return -1, errors.New("Name, capacity, last row and last column are required fields")
 	}
 
-	stmt, err := config.DbConnection.Prepare("INSERT INTO theater(name, capacity, last_row, last_column) VALUES ($1, $2, $3, $4) RETURNING id")
+	stmt, err := config.DbConnection.Prepare("INSERT INTO theater(name, capacity, last_row, last_column, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING id")
 	if err != nil {
 		return -1, err
 	}
 	defer stmt.Close()
 
 	var newTheaterID int
-	err = stmt.QueryRow(newTheater.Name, newTheater.Capacity, newTheater.LastRow, newTheater.LastColumn).Scan(&newTheaterID)
+	currentTime := time.Now().Unix()
+	err = stmt.QueryRow(newTheater.Name, newTheater.Capacity, newTheater.LastRow, newTheater.LastColumn, currentTime).Scan(&newTheaterID)
 	if err != nil {
 		return -1, err
 	}

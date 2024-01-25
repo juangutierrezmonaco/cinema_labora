@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS theater (
   capacity INT NOT NULL,
   last_row VARCHAR(2) NOT NULL,
   last_column INT NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at bigint NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS screening (
@@ -16,12 +16,12 @@ CREATE TABLE IF NOT EXISTS screening (
   theater_id INT REFERENCES theater(id),
   available_seats INT NOT NULL,
   taken_seats VARCHAR(5) [],
-  showtime TIMESTAMP NOT NULL,
+  showtime bigint NOT NULL,
   price DECIMAL(10, 2) NOT NULL,
   language VARCHAR(10),
   views_count INT DEFAULT 0,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL
+  created_at bigint NOT NULL,
+  updated_at bigint NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "user" (
@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS "user" (
   password VARCHAR(50) NOT NULL,
   gender CHAR,
   picture_url VARCHAR(256) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL
+  created_at bigint NOT NULL,
+  updated_at bigint NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS ticket (
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS ticket (
   pickup_id VARCHAR(10),
   user_id INT REFERENCES "user"(id),
   screening_id INT REFERENCES screening(id),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at bigint NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS comment (
@@ -49,5 +49,5 @@ CREATE TABLE IF NOT EXISTS comment (
   user_id INT REFERENCES "user"(id),
   movie_id INT,
   content TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at bigint NOT NULL
 );
