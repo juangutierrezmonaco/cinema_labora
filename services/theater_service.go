@@ -10,7 +10,7 @@ import (
 )
 
 func CreateTheater(newTheater models.Theater) (int, error) {
-	if *newTheater.Name == "" || *newTheater.Capacity == 0 || *newTheater.LastRow == "" || *newTheater.LastColumn == 0 {
+	if newTheater.Name == nil || newTheater.Capacity == nil || newTheater.LastRow == nil || newTheater.LastColumn == nil {
 		return -1, errors.New("Name, capacity, last row and last column are required fields")
 	}
 
