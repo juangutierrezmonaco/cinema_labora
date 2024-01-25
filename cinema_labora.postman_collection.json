@@ -25,7 +25,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/theater",
+							"raw": "http://localhost:8080/api/movie?title=Inter",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -33,7 +33,44 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"theater"
+								"movie"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "Inter"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET BY ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6M30.1qmoIT5HL0HA7PNzXykGC1YbjBmnAelbEl4X77U1-Ig",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/movie/157336",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"movie",
+								"157336"
 							]
 						}
 					},
