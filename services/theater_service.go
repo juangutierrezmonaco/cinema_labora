@@ -78,7 +78,6 @@ func GetAllTheaters(name string, capacity int, capacityGt int, capacityLt int) (
 		theaters = append(theaters, theater)
 	}
 
-	// Check for errors from iterating over rows
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
