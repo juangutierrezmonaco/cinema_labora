@@ -11,7 +11,6 @@ type User struct {
 	PasswordHash string     `json:"-"`
 	Gender       *string    `json:"gender,omitempty"`
 	PictureURL   *string    `json:"picture_url,omitempty"`
-	TicketIDs    []int      `json:"ticket_ids,omitempty"`
 	CreatedAt    *time.Time `json:"created_at,omitempty"`
 	UpdatedAt    time.Time  `json:"updated_at"`
 }
