@@ -28,4 +28,11 @@ func BuildRoutes(router *mux.Router) {
 	router.HandleFunc("/api/user/{id}", controllers.GetUserByID).Methods("GET")
 	router.HandleFunc("/api/user/{id}", controllers.UpdateUser).Methods("PUT")
 	router.HandleFunc("/api/user/{id}", controllers.DeleteUser).Methods("DELETE")
+
+	// Comment Routes
+	router.HandleFunc("/api/comment", controllers.CreateComment).Methods("POST")
+	router.HandleFunc("/api/comment", controllers.GetComments).Methods("GET")
+	router.HandleFunc("/api/comment/{id}", controllers.GetCommentByID).Methods("GET")
+	router.HandleFunc("/api/comment/{id}", controllers.UpdateComment).Methods("PUT")
+	router.HandleFunc("/api/comment/{id}", controllers.DeleteComment).Methods("DELETE")
 }

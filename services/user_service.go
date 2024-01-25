@@ -149,7 +149,6 @@ func buildUpdateUserQuery(updatedUser models.User) (string, error) {
 	return query, nil
 }
 
-// getNonNullUserFields devuelve los campos no nulos de un usuario.
 func getNonNullUserFields(user models.User) []interface{} {
 	var nonNullFields []interface{}
 
@@ -182,7 +181,6 @@ func getNonNullUserFields(user models.User) []interface{} {
 	return nonNullFields
 }
 
-// UpdateUser actualiza un usuario.
 func UpdateUser(id int, updatedUser models.User) error {
 	query, err := buildUpdateUserQuery(updatedUser)
 	if err != nil {

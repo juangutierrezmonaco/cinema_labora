@@ -27,7 +27,6 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Devolver el usuario creado como respuesta
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	response := fmt.Sprintf("User created correctly with ID: %d\n", userID)

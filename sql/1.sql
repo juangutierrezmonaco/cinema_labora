@@ -38,16 +38,17 @@ CREATE TABLE IF NOT EXISTS "user" (
 
 CREATE TABLE IF NOT EXISTS ticket (
   id SERIAL PRIMARY KEY,
-  pickup_id VARCHAR(10),
-  user_id INT REFERENCES "user"(id),
-  screening_id INT REFERENCES screening(id),
+  pickup_id VARCHAR(10) NOT NULL,
+  user_id INT REFERENCES "user"(id) NOT NULL,
+  screening_id INT REFERENCES screening(id) NOT NULL,
   created_at bigint NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS comment (
   id SERIAL PRIMARY KEY,
   user_id INT REFERENCES "user"(id),
-  movie_id INT,
-  content TEXT,
-  created_at bigint NOT NULL
+  movie_id INT NOT NULL,
+  content TEXT NOT NULL,
+  created_at bigint NOT NULL,
+  updated_at bigint NOT NULL
 );

@@ -6,4 +6,5 @@ type Comment struct {
 	MovieID   *int    `json:"movie_id,omitempty"`
 	Content   *string `json:"content,omitempty"`
 	CreatedAt *int64  `json:"created_at,omitempty"`
+	UpdatedAt *int64  `json:"updated_at,omitempty"`
 }
