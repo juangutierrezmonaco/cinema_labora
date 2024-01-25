@@ -21,4 +21,11 @@ func BuildRoutes(router *mux.Router) {
 	router.HandleFunc("/api/screening/theater/{id}", controllers.GetScreeningByMovieIdOrTheaterId).Methods("GET")
 	router.HandleFunc("/api/screening/{id}", controllers.UpdateScreening).Methods("PUT")
 	router.HandleFunc("/api/screening/{id}", controllers.DeleteScreening).Methods("DELETE")
+
+	// User Routes
+	router.HandleFunc("/api/user", controllers.CreateUser).Methods("POST")
+	router.HandleFunc("/api/user", controllers.GetUsers).Methods("GET")
+	router.HandleFunc("/api/user/{id}", controllers.GetUserByID).Methods("GET")
+	router.HandleFunc("/api/user/{id}", controllers.UpdateUser).Methods("PUT")
+	router.HandleFunc("/api/user/{id}", controllers.DeleteUser).Methods("DELETE")
 }
