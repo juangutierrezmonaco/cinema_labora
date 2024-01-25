@@ -27,7 +27,7 @@ func makeDbConnection() error {
 	}
 
 	DbConnection = dbConn
-	fmt.Printf("Successfully connected to the database.\n")
+	fmt.Printf("Successfully connected to the database '%s'.\n", dbData.DbName)
 	if err = DbConnection.Ping(); err != nil {
 		DbConnection.Close()
 		return err
