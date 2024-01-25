@@ -53,7 +53,7 @@ func buildSearchTheaterQuery(name string, capacity int, capacityGt int, capacity
 	return query
 }
 
-func GetAllTheaters(name string, capacity int, capacityGt int, capacityLt int) ([]models.Theater, error) {
+func GetTheaters(name string, capacity int, capacityGt int, capacityLt int) ([]models.Theater, error) {
 	query := buildSearchTheaterQuery(name, capacity, capacityGt, capacityLt)
 	stmt, err := config.DbConnection.Prepare(query)
 	if err != nil {

@@ -33,13 +33,13 @@ func CreateTheater(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(response))
 }
 
-func GetAllTheaters(w http.ResponseWriter, r *http.Request) {
+func GetTheaters(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Query().Get("name")
 	capacity, err := strconv.Atoi(r.URL.Query().Get("capacity"))
 	capacityGt, err := strconv.Atoi(r.URL.Query().Get("capacity_gt"))
 	capacityLt, err := strconv.Atoi(r.URL.Query().Get("capacity_lt"))
 
-	theaters, err := services.GetAllTheaters(name, capacity, capacityGt, capacityLt)
+	theaters, err := services.GetTheaters(name, capacity, capacityGt, capacityLt)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		w.Write([]byte("Error fetching the theaters."))

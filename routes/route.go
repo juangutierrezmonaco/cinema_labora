@@ -8,8 +8,10 @@ import (
 func BuildRoutes(router *mux.Router) {
 	// Theater Routes
 	router.HandleFunc("/api/theater", controllers.CreateTheater).Methods("POST")
-	router.HandleFunc("/api/theater", controllers.GetAllTheaters).Methods("GET")
-	router.HandleFunc("/api/theater/{id}", controllers.GetAllTheaters).Methods("GET")
+	router.HandleFunc("/api/theater", controllers.GetTheaters).Methods("GET")
+	router.HandleFunc("/api/theater/{id}", controllers.GetTheaters).Methods("GET")
+	router.HandleFunc("/api/theater/{id}", controllers.UpdateTheater).Methods("PUT")
+	router.HandleFunc("/api/theater/{id}", controllers.DeleteTheater).Methods("DELETE")
 	router.HandleFunc("/api/theater/{id}", controllers.UpdateTheater).Methods("PUT")
 	router.HandleFunc("/api/theater/{id}", controllers.DeleteTheater).Methods("DELETE")
 }
