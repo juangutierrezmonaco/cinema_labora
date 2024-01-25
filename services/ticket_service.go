@@ -128,7 +128,7 @@ func buildUpdateTicketQuery(updatedTicket models.Ticket) (string, error) {
 	if paramsSize == 1 {
 		return "", fmt.Errorf("You must modify at least one field.")
 	}
-	
+
 	query = query[:len(query)-2] + fmt.Sprintf(" WHERE id = $%d", paramsSize)
 	return query, nil
 }
@@ -151,7 +151,6 @@ func getNonNullTicketFields(ticket models.Ticket) []interface{} {
 	if ticket.CreatedAt != nil {
 		nonNullFields = append(nonNullFields, ticket.CreatedAt)
 	}
-	nonNullFields = append(nonNullFields, time.Now().Unix())
 
 	return nonNullFields
 }
