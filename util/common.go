@@ -34,9 +34,15 @@ type AllEnvData struct {
 
 var EnvData AllEnvData
 
+const isProd = true
+
 func LoadEnv() error {
-	godotenv.Load("./.env")
-	if err := godotenv.Load("./.env"); err != nil {
+	envPath := "./development.env"
+	if isProd {
+		envPath = "./production.env"
+	}
+
+	if err := godotenv.Load(envPath); err != nil {
 		log.Fatalf("Error while loading env variables. Error: %v\n", err)
 	}
 
