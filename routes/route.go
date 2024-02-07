@@ -3,9 +3,13 @@ package routes
 import (
 	"github.com/gorilla/mux"
 	"github.com/labora/labora-golang/cinema_labora/controllers"
+	"github.com/labora/labora-golang/cinema_labora/middlewares"
 )
 
 func BuildRoutes(router *mux.Router) {
+	// Logging every request info
+	router.Use(middlewares.LoggingMiddleware)
+
 	// Theater Routes
 	router.HandleFunc("/api/theater", controllers.CreateTheater).Methods("POST")
 	router.HandleFunc("/api/theater", controllers.GetTheaters).Methods("GET")
