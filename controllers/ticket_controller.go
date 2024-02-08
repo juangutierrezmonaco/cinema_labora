@@ -30,22 +30,9 @@ func GetTickets(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetTicketByID(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	ticketID, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid ticket ID", http.StatusBadRequest)
-		return
-	}
-
-	ticket, err := services.GetTicketByID(ticketID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(ticket)
+	GetControllerItemByID(w, r, func(id int) (interface{}, error) {
+		return services.GetTicketByID(id)
+	}, "Ticket")
 }
 
 func UpdateTicket(w http.ResponseWriter, r *http.Request) {

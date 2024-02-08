@@ -31,22 +31,9 @@ func GetTheaters(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetTheaterByID(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	theaterID, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid theater ID", http.StatusBadRequest)
-		return
-	}
-
-	theater, err := services.GetTheaterByID(theaterID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(theater)
+	GetControllerItemByID(w, r, func(id int) (interface{}, error) {
+		return services.GetTheaterByID(id)
+	}, "Theater")
 }
 
 func UpdateTheater(w http.ResponseWriter, r *http.Request) {

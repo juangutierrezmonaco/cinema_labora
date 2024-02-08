@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func CreateControllerItem(w http.ResponseWriter, r *http.Request, newItem interface{}, createFunc func(interface{}) (int, error), itemName string) {
@@ -37,4 +40,23 @@ func GetControllerItems(w http.ResponseWriter, r *http.Request, getFunc func() (
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(items)
+}
+
+func GetControllerItemByID(w http.ResponseWriter, r *http.Request, getFunc func(int) (interface{}, error), itemName string) {
+	params := mux.Vars(r)
+	itemID, err := strconv.Atoi(params["id"])
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Invalid %s ID", itemName), http.StatusBadRequest)
+		return
+	}
+
+	item, err := getFunc(itemID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(item)
 }

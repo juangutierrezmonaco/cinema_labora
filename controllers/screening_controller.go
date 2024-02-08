@@ -39,22 +39,9 @@ func GetScreenings(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetScreeningByID(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	screeningID, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid screening ID", http.StatusBadRequest)
-		return
-	}
-
-	screening, err := services.GetScreeningByID(screeningID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(screening)
+	GetControllerItemByID(w, r, func(id int) (interface{}, error) {
+		return services.GetScreeningByID(id)
+	}, "Screening")
 }
 
 func GetScreeningByMovieIdOrTheaterId(w http.ResponseWriter, r *http.Request) {

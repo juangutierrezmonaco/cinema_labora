@@ -30,22 +30,9 @@ func GetComments(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetCommentByID(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	commentID, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid comment ID", http.StatusBadRequest)
-		return
-	}
-
-	comment, err := services.GetCommentByID(commentID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(comment)
+	GetControllerItemByID(w, r, func(id int) (interface{}, error) {
+		return services.GetCommentByID(id)
+	}, "Comment")
 }
 
 func UpdateComment(w http.ResponseWriter, r *http.Request) {

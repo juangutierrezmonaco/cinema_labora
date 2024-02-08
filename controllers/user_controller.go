@@ -13,7 +13,7 @@ import (
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var newUser models.User
-	CreateControllerItem(w, r, &newUser, func(data interface{}) (int, error) {		
+	CreateControllerItem(w, r, &newUser, func(data interface{}) (int, error) {
 		user := data.(*models.User)
 		return services.CreateUser(*user)
 	}, "User")
@@ -24,29 +24,16 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	lastName := r.URL.Query().Get("last_name")
 	email := r.URL.Query().Get("email")
 	gender := r.URL.Query().Get("gender")
-	
+
 	GetControllerItems(w, r, func() (interface{}, error) {
 		return services.GetUsers(firstName, lastName, email, gender)
 	}, "Users")
 }
 
 func GetUserByID(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	userID, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid user ID", http.StatusBadRequest)
-		return
-	}
-
-	user, err := services.GetUserByID(userID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(user)
+	GetControllerItemByID(w, r, func(id int) (interface{}, error) {
+		return services.GetUserByID(id)
+	}, "User")
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
