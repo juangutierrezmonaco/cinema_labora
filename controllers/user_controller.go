@@ -1,14 +1,9 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
-	"strconv"
-
-	"github.com/gorilla/mux"
 	"github.com/labora/labora-golang/cinema_labora/models"
 	"github.com/labora/labora-golang/cinema_labora/services"
+	"net/http"
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -37,48 +32,15 @@ func GetUserByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	userID, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid user ID", http.StatusBadRequest)
-		return
-	}
-
 	var updatedUser models.User
-	err = json.NewDecoder(r.Body).Decode(&updatedUser)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	err = services.UpdateUser(userID, updatedUser)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	response := fmt.Sprintf("User with ID %d updated successfully.", userID)
-	w.Write([]byte(response))
+	UpdateControllerItem(w, r, &updatedUser, func(id int, data interface{}) error {
+		user := data.(*models.User)
+		return services.UpdateUser(id, *user)
+	}, "User")
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	userID, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid user ID", http.StatusBadRequest)
-		return
-	}
-
-	err = services.DeleteUser(userID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	response := fmt.Sprintf("User with ID %d deleted successfully.", userID)
-	w.Write([]byte(response))
+	DeleteControllerItem(w, r, func(id int) error {
+		return services.DeleteUser(id)
+	}, "User")
 }

@@ -1,14 +1,10 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
-	"strconv"
-
-	"github.com/gorilla/mux"
 	"github.com/labora/labora-golang/cinema_labora/models"
 	"github.com/labora/labora-golang/cinema_labora/services"
+	"net/http"
+	"strconv"
 )
 
 func CreateComment(w http.ResponseWriter, r *http.Request) {
@@ -36,48 +32,15 @@ func GetCommentByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateComment(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	commentID, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid comment ID", http.StatusBadRequest)
-		return
-	}
-
 	var updatedComment models.Comment
-	err = json.NewDecoder(r.Body).Decode(&updatedComment)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	err = services.UpdateComment(commentID, updatedComment)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	response := fmt.Sprintf("Comment with ID %d updated successfully.", commentID)
-	w.Write([]byte(response))
+	UpdateControllerItem(w, r, &updatedComment, func(id int, data interface{}) error {
+		comment := data.(*models.Comment)
+		return services.UpdateComment(id, *comment)
+	}, "Comment")
 }
 
 func DeleteComment(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	commentID, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid comment ID", http.StatusBadRequest)
-		return
-	}
-
-	err = services.DeleteComment(commentID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	response := fmt.Sprintf("Comment with ID %d deleted successfully.", commentID)
-	w.Write([]byte(response))
+	DeleteControllerItem(w, r, func(id int) error {
+		return services.DeleteComment(id)
+	}, "Comment")
 }

@@ -1,14 +1,10 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
-	"strconv"
-
-	"github.com/gorilla/mux"
 	"github.com/labora/labora-golang/cinema_labora/models"
 	"github.com/labora/labora-golang/cinema_labora/services"
+	"net/http"
+	"strconv"
 )
 
 func CreateTheater(w http.ResponseWriter, r *http.Request) {
@@ -37,49 +33,15 @@ func GetTheaterByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateTheater(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	theaterID, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid theater ID", http.StatusBadRequest)
-		return
-	}
-
 	var updatedTheater models.Theater
-	err = json.NewDecoder(r.Body).Decode(&updatedTheater)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	err = services.UpdateTheater(theaterID, updatedTheater)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	response := fmt.Sprintf("Theater with ID %d updated successfully.", theaterID)
-	w.Write([]byte(response))
+	UpdateControllerItem(w, r, &updatedTheater, func(id int, data interface{}) error {
+		theater := data.(*models.Theater)
+		return services.UpdateTheater(id, *theater)
+	}, "Theater")
 }
 
 func DeleteTheater(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	theaterID, err := strconv.Atoi(params["id"])
-
-	if err != nil {
-		http.Error(w, "Invalid theater ID", http.StatusBadRequest)
-		return
-	}
-
-	err = services.DeleteTheater(theaterID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	response := fmt.Sprintf("Theater with ID %d deleted successfully.", theaterID)
-	w.Write([]byte(response))
+	DeleteControllerItem(w, r, func(id int) error {
+		return services.DeleteTheater(id)
+	}, "Theater")
 }

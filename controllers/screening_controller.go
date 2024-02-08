@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -65,49 +64,15 @@ func GetScreeningByMovieIdOrTheaterId(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateScreening(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	screeningID, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid screening ID", http.StatusBadRequest)
-		return
-	}
-
 	var updatedScreening models.Screening
-	err = json.NewDecoder(r.Body).Decode(&updatedScreening)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	err = services.UpdateScreening(screeningID, updatedScreening)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	response := fmt.Sprintf("Screening with ID %d updated successfully.", screeningID)
-	w.Write([]byte(response))
+	UpdateControllerItem(w, r, &updatedScreening, func(id int, data interface{}) error {
+		screening := data.(*models.Screening)
+		return services.UpdateScreening(id, *screening)
+	}, "Screening")
 }
 
 func DeleteScreening(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	screeningID, err := strconv.Atoi(params["id"])
-
-	if err != nil {
-		http.Error(w, "Invalid screening ID", http.StatusBadRequest)
-		return
-	}
-
-	err = services.DeleteScreening(screeningID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	response := fmt.Sprintf("Screening with ID %d deleted successfully.", screeningID)
-	w.Write([]byte(response))
+	DeleteControllerItem(w, r, func(id int) error {
+		return services.DeleteScreening(id)
+	}, "Screening")
 }
