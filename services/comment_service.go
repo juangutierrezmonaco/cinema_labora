@@ -177,9 +177,13 @@ func DeleteComment(id int) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(id)
+	res, err := stmt.Exec(id)
 	if err != nil {
 		return err
+	}
+	rowsAffected, _ := res.RowsAffected()
+	if rowsAffected == 0 {
+		return fmt.Errorf("There's no comment with the ID %d", id)
 	}
 
 	return nil
