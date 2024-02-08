@@ -13,24 +13,10 @@ import (
 
 func CreateComment(w http.ResponseWriter, r *http.Request) {
 	var newComment models.Comment
-
-	err := json.NewDecoder(r.Body).Decode(&newComment)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	commentID, err := services.CreateComment(newComment)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		w.Write([]byte("Error while creating the comment."))
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	response := fmt.Sprintf("Comment created correctly with ID: %d\n", commentID)
-	w.Write([]byte(response))
+	CreateControllerItem(w, r, &newComment, func(data interface{}) (int, error) {
+		comment := data.(*models.Comment)
+		return services.CreateComment(*comment)
+	}, "Comment")
 }
 
 func GetComments(w http.ResponseWriter, r *http.Request) {

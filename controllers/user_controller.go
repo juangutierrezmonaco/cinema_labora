@@ -13,24 +13,10 @@ import (
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var newUser models.User
-
-	err := json.NewDecoder(r.Body).Decode(&newUser)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	userID, err := services.CreateUser(newUser)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		w.Write([]byte("Error while creating the user."))
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	response := fmt.Sprintf("User created correctly with ID: %d\n", userID)
-	w.Write([]byte(response))
+	CreateControllerItem(w, r, &newUser, func(data interface{}) (int, error) {		
+		user := data.(*models.User)
+		return services.CreateUser(*user)
+	}, "User")
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {

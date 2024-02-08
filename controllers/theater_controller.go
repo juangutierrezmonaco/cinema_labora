@@ -13,24 +13,10 @@ import (
 
 func CreateTheater(w http.ResponseWriter, r *http.Request) {
 	var newTheater models.Theater
-
-	err := json.NewDecoder(r.Body).Decode(&newTheater)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	theaterID, err := services.CreateTheater(newTheater)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		w.Write([]byte("Error while creating the theater."))
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	response := fmt.Sprintf("Theater created correcly with ID: %d\n", theaterID)
-	w.Write([]byte(response))
+	CreateControllerItem(w, r, &newTheater, func(data interface{}) (int, error) {
+		theater := data.(*models.Theater)
+		return services.CreateTheater(*theater)
+	}, "Theater")
 }
 
 func GetTheaters(w http.ResponseWriter, r *http.Request) {

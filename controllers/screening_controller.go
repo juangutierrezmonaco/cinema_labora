@@ -14,24 +14,10 @@ import (
 
 func CreateScreening(w http.ResponseWriter, r *http.Request) {
 	var newScreening models.Screening
-
-	err := json.NewDecoder(r.Body).Decode(&newScreening)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	screeningID, err := services.CreateScreening(newScreening)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		w.Write([]byte("Error while creating the screening."))
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	response := fmt.Sprintf("Screening created correctly with ID: %d\n", screeningID)
-	w.Write([]byte(response))
+	CreateControllerItem(w, r, &newScreening, func(data interface{}) (int, error) {
+		screening := data.(*models.Screening)
+		return services.CreateScreening(*screening)
+	}, "Screening")
 }
 
 func GetScreenings(w http.ResponseWriter, r *http.Request) {

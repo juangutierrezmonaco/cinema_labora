@@ -13,24 +13,10 @@ import (
 
 func CreateTicket(w http.ResponseWriter, r *http.Request) {
 	var newTicket models.Ticket
-
-	err := json.NewDecoder(r.Body).Decode(&newTicket)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	ticketID, err := services.CreateTicket(newTicket)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		w.Write([]byte("Error while creating the ticket."))
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	response := fmt.Sprintf("Ticket created correctly with ID: %d\n", ticketID)
-	w.Write([]byte(response))
+	CreateControllerItem(w, r, &newTicket, func(data interface{}) (int, error) {
+		ticket := data.(*models.Ticket)
+		return services.CreateTicket(*ticket)
+	}, "Ticket")
 }
 
 func GetTickets(w http.ResponseWriter, r *http.Request) {
