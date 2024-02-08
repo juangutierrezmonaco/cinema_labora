@@ -24,17 +24,10 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	lastName := r.URL.Query().Get("last_name")
 	email := r.URL.Query().Get("email")
 	gender := r.URL.Query().Get("gender")
-
-	users, err := services.GetUsers(firstName, lastName, email, gender)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		w.Write([]byte("Error fetching the users."))
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(users)
+	
+	GetControllerItems(w, r, func() (interface{}, error) {
+		return services.GetUsers(firstName, lastName, email, gender)
+	}, "Users")
 }
 
 func GetUserByID(w http.ResponseWriter, r *http.Request) {

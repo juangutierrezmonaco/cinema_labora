@@ -22,27 +22,20 @@ func CreateScreening(w http.ResponseWriter, r *http.Request) {
 
 func GetScreenings(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Query().Get("name")
-	showtime, err := strconv.ParseInt(r.URL.Query().Get("showtime"), 10, 64)
-	showtimeGt, err := strconv.ParseInt(r.URL.Query().Get("showtime_gt"), 10, 64)
-	showtimeLt, err := strconv.ParseInt(r.URL.Query().Get("showtime_lt"), 10, 64)
-	price, err := strconv.ParseFloat(r.URL.Query().Get("price"), 64)
-	priceGt, err := strconv.ParseFloat(r.URL.Query().Get("price_gt"), 64)
-	priceLt, err := strconv.ParseFloat(r.URL.Query().Get("price_lt"), 64)
+	showtime, _ := strconv.ParseInt(r.URL.Query().Get("showtime"), 10, 64)
+	showtimeGt, _ := strconv.ParseInt(r.URL.Query().Get("showtime_gt"), 10, 64)
+	showtimeLt, _ := strconv.ParseInt(r.URL.Query().Get("showtime_lt"), 10, 64)
+	price, _ := strconv.ParseFloat(r.URL.Query().Get("price"), 64)
+	priceGt, _ := strconv.ParseFloat(r.URL.Query().Get("price_gt"), 64)
+	priceLt, _ := strconv.ParseFloat(r.URL.Query().Get("price_lt"), 64)
 	language := r.URL.Query().Get("language")
-	viewsCount, err := strconv.Atoi(r.URL.Query().Get("views_count"))
-	viewsCountGt, err := strconv.Atoi(r.URL.Query().Get("views_count_gt"))
-	viewsCountLt, err := strconv.Atoi(r.URL.Query().Get("views_count_lt"))
+	viewsCount, _ := strconv.Atoi(r.URL.Query().Get("views_count"))
+	viewsCountGt, _ := strconv.Atoi(r.URL.Query().Get("views_count_gt"))
+	viewsCountLt, _ := strconv.Atoi(r.URL.Query().Get("views_count_lt"))
 
-	screenings, err := services.GetScreenings(name, showtime, showtimeGt, showtimeLt, price, priceGt, priceLt, language, viewsCount, viewsCountGt, viewsCountLt)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		w.Write([]byte("Error fetching the screenings."))
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(screenings)
+	GetControllerItems(w, r, func() (interface{}, error) {
+		return services.GetScreenings(name, showtime, showtimeGt, showtimeLt, price, priceGt, priceLt, language, viewsCount, viewsCountGt, viewsCountLt)
+	}, "Screenings")
 }
 
 func GetScreeningByID(w http.ResponseWriter, r *http.Request) {

@@ -21,20 +21,13 @@ func CreateTheater(w http.ResponseWriter, r *http.Request) {
 
 func GetTheaters(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Query().Get("name")
-	capacity, err := strconv.Atoi(r.URL.Query().Get("capacity"))
-	capacityGt, err := strconv.Atoi(r.URL.Query().Get("capacity_gt"))
-	capacityLt, err := strconv.Atoi(r.URL.Query().Get("capacity_lt"))
+	capacity, _ := strconv.Atoi(r.URL.Query().Get("capacity"))
+	capacityGt, _ := strconv.Atoi(r.URL.Query().Get("capacity_gt"))
+	capacityLt, _ := strconv.Atoi(r.URL.Query().Get("capacity_lt"))
 
-	theaters, err := services.GetTheaters(name, capacity, capacityGt, capacityLt)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		w.Write([]byte("Error fetching the theaters."))
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(theaters)
+	GetControllerItems(w, r, func() (interface{}, error) {
+		return services.GetTheaters(name, capacity, capacityGt, capacityLt)
+	}, "Theaters")
 }
 
 func GetTheaterByID(w http.ResponseWriter, r *http.Request) {

@@ -24,16 +24,9 @@ func GetComments(w http.ResponseWriter, r *http.Request) {
 	movieID, _ := strconv.Atoi(r.URL.Query().Get("movie_id"))
 	content := r.URL.Query().Get("content")
 
-	comments, err := services.GetComments(userID, movieID, content)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		w.Write([]byte("Error fetching the comments."))
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(comments)
+	GetControllerItems(w, r, func() (interface{}, error) {
+		return services.GetComments(userID, movieID, content)
+	}, "Comments")
 }
 
 func GetCommentByID(w http.ResponseWriter, r *http.Request) {

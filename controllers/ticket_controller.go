@@ -24,16 +24,9 @@ func GetTickets(w http.ResponseWriter, r *http.Request) {
 	userID, _ := strconv.Atoi(r.URL.Query().Get("user_id"))
 	screeningID, _ := strconv.Atoi(r.URL.Query().Get("screening_id"))
 
-	tickets, err := services.GetTickets(pickupID, userID, screeningID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		w.Write([]byte("Error fetching the tickets."))
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(tickets)
+	GetControllerItems(w, r, func() (interface{}, error) {
+		return services.GetTickets(pickupID, userID, screeningID)
+	}, "Tickets")
 }
 
 func GetTicketByID(w http.ResponseWriter, r *http.Request) {

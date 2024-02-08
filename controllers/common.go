@@ -25,3 +25,16 @@ func CreateControllerItem(w http.ResponseWriter, r *http.Request, newItem interf
 	response := fmt.Sprintf("%s created correctly with ID: %d\n", itemName, itemID)
 	w.Write([]byte(response))
 }
+
+func GetControllerItems(w http.ResponseWriter, r *http.Request, getFunc func() (interface{}, error), itemName string) {
+	items, err := getFunc()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf("Error fetching the %s.", itemName)))
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(items)
+}
