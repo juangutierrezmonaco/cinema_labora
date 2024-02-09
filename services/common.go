@@ -100,3 +100,24 @@ func GetDatabaseItemByID(id int, tableName string, scanRowFunc func(row *sql.Row
 
 	return item, nil
 }
+
+// UPDATE
+
+func DeleteItemByID(id int, tableName string) error {
+	stmt, err := config.DbConnection.Prepare(fmt.Sprintf("DELETE FROM %s WHERE id = $1", tableName))
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	res, err := stmt.Exec(id)
+	if err != nil {
+		return err
+	}
+	rowsAffected, _ := res.RowsAffected()
+	if rowsAffected == 0 {
+		return fmt.Errorf("There's no %s with the ID %d", tableName, id)
+	}
+
+	return nil
+}

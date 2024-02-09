@@ -141,20 +141,5 @@ func UpdateTicket(id int, updatedTicket models.Ticket) error {
 }
 
 func DeleteTicket(id int) error {
-	stmt, err := config.DbConnection.Prepare("DELETE FROM ticket WHERE id = $1")
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
-	res, err := stmt.Exec(id)
-	if err != nil {
-		return err
-	}
-	rowsAffected, _ := res.RowsAffected()
-	if rowsAffected == 0 {
-		return fmt.Errorf("There's no ticket with the ID %d", id)
-	}
-
-	return nil
+	return DeleteItemByID(id, "ticket")
 }

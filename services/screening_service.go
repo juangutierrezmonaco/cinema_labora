@@ -262,20 +262,5 @@ func UpdateScreening(id int, updatedScreening models.Screening) error {
 }
 
 func DeleteScreening(id int) error {
-	stmt, err := config.DbConnection.Prepare("DELETE FROM screening WHERE id = $1")
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
-	res, err := stmt.Exec(id)
-	if err != nil {
-		return err
-	}
-	rowsAffected, _ := res.RowsAffected()
-	if rowsAffected == 0 {
-		return fmt.Errorf("There's no screening with the ID %d", id)
-	}
-
-	return nil
+	return DeleteItemByID(id, "screening")
 }
