@@ -112,33 +112,40 @@ func GetScreeningByID(id int) (*models.Screening, error) {
 	return &screening, nil
 }
 
-func GetScreeningByMovieIdOrTheaterId(id int, isSearchingByMovie bool) (*models.Screening, error) {
+func GetScreeningByMovieIdOrTheaterId(id int, isSearchingByMovie bool) ([]models.Screening, error) {
 	var query string
 	if isSearchingByMovie {
-		query = "SELECT * FROM screening WHERE movie_id = $1"
+		query = fmt.Sprintf("SELECT * FROM screening WHERE movie_id = %d", id)
 	} else {
-		query = "SELECT * FROM screening WHERE theater_id = $1"
+		query = fmt.Sprintf("SELECT * FROM screening WHERE theater_id = %d", id)
 	}
-	stmt, err := config.DbConnection.Prepare(query)
+	scanRowFunc := func(rows *sql.Rows) (interface{}, error) {
+		var screening models.Screening
+		var auxTakenSeats []uint8
+		err := rows.Scan(
+			&screening.ID, &screening.Name, &screening.MovieID,
+			&screening.TheaterID, &screening.AvailableSeats, &auxTakenSeats,
+			&screening.Showtime, &screening.Price, &screening.Language,
+			&screening.ViewsCount, &screening.CreatedAt, &screening.UpdatedAt,
+		)
+		screening.TakenSeats = util.ConvertSqlUint8ToStringArray(auxTakenSeats)
+		if err != nil {
+			return nil, err
+		}
+		return screening, nil
+	}
+
+	items, err := GetDatabaseItems(query, scanRowFunc)
 	if err != nil {
 		return nil, err
 	}
-	defer stmt.Close()
 
-	var screening models.Screening
-	var auxTakenSeats []uint8
-	err = stmt.QueryRow(id).Scan(
-		&screening.ID, &screening.Name, &screening.MovieID,
-		&screening.TheaterID, &screening.AvailableSeats, &auxTakenSeats,
-		&screening.Showtime, &screening.Price, &screening.Language,
-		&screening.ViewsCount, &screening.CreatedAt, &screening.UpdatedAt,
-	)
-	screening.TakenSeats = util.ConvertSqlUint8ToStringArray(auxTakenSeats)
-	if err != nil {
-		return nil, err
+	var screenings []models.Screening
+	for _, item := range items {
+		screenings = append(screenings, item.(models.Screening))
 	}
 
-	return &screening, nil
+	return screenings, nil
 }
 
 func buildUpdateScreeningQuery(updatedScreening models.Screening) (string, error) {
