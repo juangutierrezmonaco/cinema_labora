@@ -1,6 +1,7 @@
 package services
 
 import (
+	"database/sql"
 	"errors"
 	"strings"
 
@@ -50,4 +51,34 @@ func (qb *QueryBuilder) BuildQuery() string {
 		query += " WHERE " + strings.Join(qb.Conditions, " AND ")
 	}
 	return query
+}
+
+func GetDatabaseItems(query string, scanRow func(rows *sql.Rows) (interface{}, error)) ([]interface{}, error) {
+	stmt, err := config.DbConnection.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var items []interface{}
+
+	for rows.Next() {
+		item, err := scanRow(rows)
+		if err != nil {
+			return nil, err
+		}
+		items = append(items, item)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return items, nil
 }

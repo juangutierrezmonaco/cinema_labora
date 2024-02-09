@@ -1,6 +1,7 @@
 package services
 
 import (
+	"database/sql"
 	"fmt"
 	"time"
 
@@ -59,20 +60,7 @@ func buildSearchScreeningQuery(name string, showtime int64, showtimeGt int64, sh
 
 func GetScreenings(name string, showtime int64, showtimeGt int64, showtimeLt int64, price float64, priceGt float64, priceLt float64, language string, viewsCount int, viewsCountGt int, viewsCountLt int) ([]models.Screening, error) {
 	query := buildSearchScreeningQuery(name, showtime, showtimeGt, showtimeLt, price, priceGt, priceLt, language, viewsCount, viewsCountGt, viewsCountLt)
-	stmt, err := config.DbConnection.Prepare(query)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query()
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var screenings []models.Screening
-	for rows.Next() {
+	scanRowFunc := func(rows *sql.Rows) (interface{}, error) {
 		var screening models.Screening
 		var auxTakenSeats []uint8
 		err := rows.Scan(
@@ -85,11 +73,17 @@ func GetScreenings(name string, showtime int64, showtimeGt int64, showtimeLt int
 		if err != nil {
 			return nil, err
 		}
-		screenings = append(screenings, screening)
+		return screening, nil
 	}
 
-	if err = rows.Err(); err != nil {
+	items, err := GetDatabaseItems(query, scanRowFunc)
+	if err != nil {
 		return nil, err
+	}
+
+	var screenings []models.Screening
+	for _, item := range items {
+		screenings = append(screenings, item.(models.Screening))
 	}
 
 	return screenings, nil

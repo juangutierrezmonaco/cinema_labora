@@ -1,6 +1,7 @@
 package services
 
 import (
+	"database/sql"
 	"fmt"
 	"time"
 
@@ -36,31 +37,23 @@ func buildSearchTheaterQuery(name string, capacity int, capacityGt int, capacity
 
 func GetTheaters(name string, capacity int, capacityGt int, capacityLt int) ([]models.Theater, error) {
 	query := buildSearchTheaterQuery(name, capacity, capacityGt, capacityLt)
-	stmt, err := config.DbConnection.Prepare(query)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query()
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var theaters []models.Theater
-
-	for rows.Next() {
+	scanRowFunc := func(rows *sql.Rows) (interface{}, error) {
 		var theater models.Theater
 		err := rows.Scan(&theater.ID, &theater.Name, &theater.Capacity, &theater.LastRow, &theater.LastColumn, &theater.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
-		theaters = append(theaters, theater)
+		return theater, nil
 	}
 
-	if err = rows.Err(); err != nil {
+	items, err := GetDatabaseItems(query, scanRowFunc)
+	if err != nil {
 		return nil, err
+	}
+
+	var theaters []models.Theater
+	for _, item := range items {
+		theaters = append(theaters, item.(models.Theater))
 	}
 
 	return theaters, nil

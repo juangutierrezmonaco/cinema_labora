@@ -1,6 +1,7 @@
 package services
 
 import (
+	"database/sql"
 	"fmt"
 	"time"
 
@@ -33,31 +34,23 @@ func buildSearchTicketQuery(pickupID string, userID, screeningID int) string {
 
 func GetTickets(pickupID string, userID, screeningID int) ([]models.Ticket, error) {
 	query := buildSearchTicketQuery(pickupID, userID, screeningID)
-	stmt, err := config.DbConnection.Prepare(query)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query()
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var tickets []models.Ticket
-
-	for rows.Next() {
+	scanRowFunc := func(rows *sql.Rows) (interface{}, error) {
 		var ticket models.Ticket
 		err := rows.Scan(&ticket.ID, &ticket.PickupID, &ticket.UserID, &ticket.ScreeningID, &ticket.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
-		tickets = append(tickets, ticket)
+		return ticket, nil
 	}
 
-	if err = rows.Err(); err != nil {
+	items, err := GetDatabaseItems(query, scanRowFunc)
+	if err != nil {
 		return nil, err
+	}
+
+	var tickets []models.Ticket
+	for _, item := range items {
+		tickets = append(tickets, item.(models.Ticket))
 	}
 
 	return tickets, nil

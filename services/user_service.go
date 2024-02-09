@@ -1,6 +1,7 @@
 package services
 
 import (
+	"database/sql"
 	"fmt"
 	"time"
 
@@ -36,31 +37,23 @@ func buildSearchUserQuery(firstName, lastName, email, gender string) string {
 
 func GetUsers(firstName, lastName, email, gender string) ([]models.User, error) {
 	query := buildSearchUserQuery(firstName, lastName, email, gender)
-	stmt, err := config.DbConnection.Prepare(query)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query()
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var users []models.User
-
-	for rows.Next() {
+	scanRowFunc := func(rows *sql.Rows) (interface{}, error) {
 		var user models.User
 		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.Gender, &user.PictureURL, &user.CreatedAt, &user.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
-		users = append(users, user)
+		return user, nil
 	}
 
-	if err = rows.Err(); err != nil {
+	items, err := GetDatabaseItems(query, scanRowFunc)
+	if err != nil {
 		return nil, err
+	}
+
+	var users []models.User
+	for _, item := range items {
+		users = append(users, item.(models.User))
 	}
 
 	return users, nil

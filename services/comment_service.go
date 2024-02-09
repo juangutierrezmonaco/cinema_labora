@@ -1,6 +1,7 @@
 package services
 
 import (
+	"database/sql"
 	"fmt"
 	"time"
 
@@ -33,31 +34,23 @@ func buildSearchCommentQuery(userID, movieID int, content string) string {
 
 func GetComments(userID, movieID int, content string) ([]models.Comment, error) {
 	query := buildSearchCommentQuery(userID, movieID, content)
-	stmt, err := config.DbConnection.Prepare(query)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query()
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var comments []models.Comment
-
-	for rows.Next() {
+	scanRowFunc := func(rows *sql.Rows) (interface{}, error) {
 		var comment models.Comment
 		err := rows.Scan(&comment.ID, &comment.UserID, &comment.MovieID, &comment.Content, &comment.CreatedAt, &comment.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
-		comments = append(comments, comment)
+		return comment, nil
 	}
 
-	if err = rows.Err(); err != nil {
+	items, err := GetDatabaseItems(query, scanRowFunc)
+	if err != nil {
 		return nil, err
+	}
+
+	var comments []models.Comment
+	for _, item := range items {
+		comments = append(comments, item.(models.Comment))
 	}
 
 	return comments, nil
