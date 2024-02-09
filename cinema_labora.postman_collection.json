@@ -25,12 +25,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/movie?title=Inter",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/movie?title=Inter",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"movie"
@@ -61,12 +59,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/movie/157336",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/movie/157336",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"movie",
@@ -97,12 +93,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/ticket",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/ticket",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"ticket"
@@ -126,12 +120,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/ticket",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/ticket",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"ticket"
@@ -155,12 +147,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/ticket/10",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/ticket/10",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"ticket",
@@ -176,12 +166,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/ticket/2",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/ticket/2",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"ticket",
@@ -212,12 +200,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/theater",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/theater",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"theater"
@@ -241,12 +227,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/theater",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/theater",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"theater"
@@ -270,12 +254,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/theater/10",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/theater/10",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"theater",
@@ -291,12 +273,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/theater/2",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/theater/2",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"theater",
@@ -327,15 +307,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/comment",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/comment/3",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
-								"comment"
+								"comment",
+								"3"
 							]
 						}
 					},
@@ -356,12 +335,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/comment",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/comment",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"comment"
@@ -385,12 +362,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/comment/2",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/comment/2",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"comment",
@@ -406,12 +381,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/comment/3",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/comment/3",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"comment",
@@ -442,12 +415,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/user",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/user",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"user"
@@ -471,12 +442,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/user",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/user",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"user"
@@ -500,12 +469,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/user/2",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/user/2",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"user",
@@ -521,12 +488,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/user/4",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/user/4",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"user",
@@ -557,12 +522,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/screening",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/screening",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"screening"
@@ -587,12 +550,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/screening/movie/1",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/screening/movie/1",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"screening",
@@ -619,12 +580,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/screening/theater/4",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/screening/theater/4",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"screening",
@@ -650,12 +609,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/screening",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/screening",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"screening"
@@ -679,12 +636,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/screening/2",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/screening/2",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"screening",
@@ -700,12 +655,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/screening/4",
-							"protocol": "http",
+							"raw": "{{env_url}}/api/screening/4",
 							"host": [
-								"localhost"
+								"{{env_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"screening",
@@ -716,6 +669,38 @@
 					"response": []
 				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "env_url",
+			"value": "http://ec2-3-16-130-73.us-east-2.compute.amazonaws.com:8080"
+		},
+		{
+			"key": "env_url",
+			"value": "http://localhost:8080",
+			"type": "string",
+			"disabled": true
 		}
 	]
 }
