@@ -60,19 +60,22 @@ func GetUsers(firstName, lastName, email, gender string) ([]models.User, error) 
 }
 
 func GetUserByID(id int) (*models.User, error) {
-	stmt, err := config.DbConnection.Prepare("SELECT * FROM \"user\" WHERE id = $1")
+	scanRowFunc := func(row *sql.Row) (interface{}, error) {
+		var user models.User
+		err := row.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.Gender, &user.PictureURL, &user.CreatedAt, &user.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		return &user, nil
+	}
+
+	item, err := GetDatabaseItemByID(id, "user", scanRowFunc)
 	if err != nil {
 		return nil, err
 	}
-	defer stmt.Close()
 
-	var user models.User
-	err = stmt.QueryRow(id).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.Gender, &user.PictureURL, &user.CreatedAt, &user.UpdatedAt)
-	if err != nil {
-		return nil, err
-	}
-
-	return &user, nil
+	return item.(*models.User), nil
 }
 
 func buildUpdateUserQuery(updatedUser models.User) (string, error) {

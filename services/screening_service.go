@@ -90,26 +90,29 @@ func GetScreenings(name string, showtime int64, showtimeGt int64, showtimeLt int
 }
 
 func GetScreeningByID(id int) (*models.Screening, error) {
-	stmt, err := config.DbConnection.Prepare("SELECT * FROM screening WHERE id = $1")
+	scanRowFunc := func(row *sql.Row) (interface{}, error) {
+		var screening models.Screening
+		var auxTakenSeats []uint8
+		err := row.Scan(
+			&screening.ID, &screening.Name, &screening.MovieID,
+			&screening.TheaterID, &screening.AvailableSeats, &auxTakenSeats,
+			&screening.Showtime, &screening.Price, &screening.Language,
+			&screening.ViewsCount, &screening.CreatedAt, &screening.UpdatedAt,
+		)
+		screening.TakenSeats = util.ConvertSqlUint8ToStringArray(auxTakenSeats)
+		if err != nil {
+			return nil, err
+		}
+
+		return &screening, nil
+	}
+
+	item, err := GetDatabaseItemByID(id, "screening", scanRowFunc)
 	if err != nil {
 		return nil, err
 	}
-	defer stmt.Close()
 
-	var screening models.Screening
-	var auxTakenSeats []uint8
-	err = stmt.QueryRow(id).Scan(
-		&screening.ID, &screening.Name, &screening.MovieID,
-		&screening.TheaterID, &screening.AvailableSeats, &auxTakenSeats,
-		&screening.Showtime, &screening.Price, &screening.Language,
-		&screening.ViewsCount, &screening.CreatedAt, &screening.UpdatedAt,
-	)
-	screening.TakenSeats = util.ConvertSqlUint8ToStringArray(auxTakenSeats)
-	if err != nil {
-		return nil, err
-	}
-
-	return &screening, nil
+	return item.(*models.Screening), nil
 }
 
 func GetScreeningByMovieIdOrTheaterId(id int, isSearchingByMovie bool) ([]models.Screening, error) {

@@ -57,19 +57,21 @@ func GetComments(userID, movieID int, content string) ([]models.Comment, error) 
 }
 
 func GetCommentByID(id int) (*models.Comment, error) {
-	stmt, err := config.DbConnection.Prepare("SELECT * FROM comment WHERE id = $1")
+	scanRowFunc := func(row *sql.Row) (interface{}, error) {
+		var comment models.Comment
+		err := row.Scan(&comment.ID, &comment.UserID, &comment.MovieID, &comment.Content, &comment.CreatedAt, &comment.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+		return &comment, nil
+	}
+
+	item, err := GetDatabaseItemByID(id, "comment", scanRowFunc)
 	if err != nil {
 		return nil, err
 	}
-	defer stmt.Close()
 
-	var comment models.Comment
-	err = stmt.QueryRow(id).Scan(&comment.ID, &comment.UserID, &comment.MovieID, &comment.Content, &comment.CreatedAt, &comment.UpdatedAt)
-	if err != nil {
-		return nil, err
-	}
-
-	return &comment, nil
+	return item.(*models.Comment), nil
 }
 
 func buildUpdateCommentQuery(updatedComment models.Comment) (string, error) {

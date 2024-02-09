@@ -57,19 +57,22 @@ func GetTickets(pickupID string, userID, screeningID int) ([]models.Ticket, erro
 }
 
 func GetTicketByID(id int) (*models.Ticket, error) {
-	stmt, err := config.DbConnection.Prepare("SELECT * FROM ticket WHERE id = $1")
+	scanRowFunc := func(row *sql.Row) (interface{}, error) {
+		var ticket models.Ticket
+		err := row.Scan(&ticket.ID, &ticket.PickupID, &ticket.UserID, &ticket.ScreeningID, &ticket.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		return &ticket, nil
+	}
+
+	item, err := GetDatabaseItemByID(id, "ticket", scanRowFunc)
 	if err != nil {
 		return nil, err
 	}
-	defer stmt.Close()
 
-	var ticket models.Ticket
-	err = stmt.QueryRow(id).Scan(&ticket.ID, &ticket.PickupID, &ticket.UserID, &ticket.ScreeningID, &ticket.CreatedAt)
-	if err != nil {
-		return nil, err
-	}
-
-	return &ticket, nil
+	return item.(*models.Ticket), nil
 }
 
 func buildUpdateTicketQuery(updatedTicket models.Ticket) (string, error) {

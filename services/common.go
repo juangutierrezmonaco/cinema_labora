@@ -3,6 +3,7 @@ package services
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/labora/labora-golang/cinema_labora/config"
@@ -53,7 +54,7 @@ func (qb *QueryBuilder) BuildQuery() string {
 	return query
 }
 
-func GetDatabaseItems(query string, scanRow func(rows *sql.Rows) (interface{}, error)) ([]interface{}, error) {
+func GetDatabaseItems(query string, scanRowFunc func(rows *sql.Rows) (interface{}, error)) ([]interface{}, error) {
 	stmt, err := config.DbConnection.Prepare(query)
 	if err != nil {
 		return nil, err
@@ -69,7 +70,7 @@ func GetDatabaseItems(query string, scanRow func(rows *sql.Rows) (interface{}, e
 	var items []interface{}
 
 	for rows.Next() {
-		item, err := scanRow(rows)
+		item, err := scanRowFunc(rows)
 		if err != nil {
 			return nil, err
 		}
@@ -81,4 +82,21 @@ func GetDatabaseItems(query string, scanRow func(rows *sql.Rows) (interface{}, e
 	}
 
 	return items, nil
+}
+
+func GetDatabaseItemByID(id int, tableName string, scanRowFunc func(row *sql.Row) (interface{}, error)) (interface{}, error) {
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id = $1", tableName)
+	stmt, err := config.DbConnection.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(id)
+	item, err := scanRowFunc(row)
+	if err != nil {
+		return nil, err
+	}
+
+	return item, nil
 }

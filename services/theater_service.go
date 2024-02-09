@@ -60,19 +60,22 @@ func GetTheaters(name string, capacity int, capacityGt int, capacityLt int) ([]m
 }
 
 func GetTheaterByID(id int) (*models.Theater, error) {
-	stmt, err := config.DbConnection.Prepare("SELECT * FROM theater WHERE id = $1")
+	scanRowFunc := func(row *sql.Row) (interface{}, error) {
+		var theater models.Theater
+		err := row.Scan(&theater.ID, &theater.Name, &theater.Capacity, &theater.LastRow, &theater.LastColumn, &theater.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		return &theater, nil
+	}
+
+	item, err := GetDatabaseItemByID(id, "theater", scanRowFunc)
 	if err != nil {
 		return nil, err
 	}
-	defer stmt.Close()
 
-	var theater models.Theater
-	err = stmt.QueryRow(id).Scan(&theater.ID, &theater.Name, &theater.Capacity, &theater.LastRow, &theater.LastColumn, &theater.CreatedAt)
-	if err != nil {
-		return nil, err
-	}
-
-	return &theater, nil
+	return item.(*models.Theater), nil
 }
 
 func buildUpdateTheaterQuery(updatedTheater models.Theater) (string, error) {
