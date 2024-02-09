@@ -35,7 +35,7 @@ type AllEnvData struct {
 
 var EnvData AllEnvData
 
-const isProd = false
+const isProd = true
 
 func LoadEnv() error {
 	envPath := "./development.env"
