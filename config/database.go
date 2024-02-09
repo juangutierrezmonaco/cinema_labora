@@ -18,7 +18,7 @@ var DbConnection *sql.DB
 
 func makeDbConnection() error {
 	dbData := util.EnvData.DbData
-	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbData.Host, dbData.Port, dbData.RolName, dbData.RolPass, dbData.DbName)
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=require", dbData.Host, dbData.Port, dbData.RolName, dbData.RolPass, dbData.DbName)
 
 	dbConn, err := sql.Open("postgres", psqlInfo)
 
