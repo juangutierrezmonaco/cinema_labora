@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -11,24 +10,12 @@ import (
 )
 
 func CreateTheater(newTheater models.Theater) (int, error) {
-	if newTheater.Name == nil || newTheater.Capacity == nil || newTheater.LastRow == nil || newTheater.LastColumn == nil {
-		return -1, errors.New("Name, capacity, last row and last column are required fields")
-	}
-
-	stmt, err := config.DbConnection.Prepare("INSERT INTO theater(name, capacity, last_row, last_column, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING id")
-	if err != nil {
-		return -1, err
-	}
-	defer stmt.Close()
-
-	var newTheaterID int
+	insertQuery := "INSERT INTO theater(name, capacity, last_row, last_column, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING id"
 	currentTime := time.Now().Unix()
-	err = stmt.QueryRow(newTheater.Name, newTheater.Capacity, newTheater.LastRow, newTheater.LastColumn, currentTime).Scan(&newTheaterID)
-	if err != nil {
-		return -1, err
-	}
-
-	return newTheaterID, nil
+	fields := []interface{}{newTheater.Name, newTheater.Capacity, newTheater.LastRow, newTheater.LastColumn, currentTime}
+	requiredFields := []interface{}{newTheater.Name, newTheater.Capacity, newTheater.LastRow, newTheater.LastColumn}
+	requiredFieldMsg := "Name, capacity, last row and last column are required fields"
+	return CreateDatabaseItem(newTheater, insertQuery, fields, requiredFields, requiredFieldMsg)
 }
 
 func buildSearchTheaterQuery(name string, capacity int, capacityGt int, capacityLt int) string {

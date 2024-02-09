@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -11,24 +10,12 @@ import (
 )
 
 func CreateComment(newComment models.Comment) (int, error) {
-	if newComment.UserID == nil || newComment.MovieID == nil || newComment.Content == nil {
-		return -1, errors.New("User ID, movie ID, and content are required fields")
-	}
-
-	stmt, err := config.DbConnection.Prepare("INSERT INTO comment(user_id, movie_id, content, created_at, updated_at) VALUES ($1, $2, $3, $4, $5) RETURNING id")
-	if err != nil {
-		return -1, err
-	}
-	defer stmt.Close()
-
-	var newCommentID int
+	insertQuery := "INSERT INTO comment(user_id, movie_id, content, created_at, updated_at) VALUES ($1, $2, $3, $4, $5) RETURNING id"
 	currentTime := time.Now().Unix()
-	err = stmt.QueryRow(newComment.UserID, newComment.MovieID, newComment.Content, currentTime, currentTime).Scan(&newCommentID)
-	if err != nil {
-		return -1, err
-	}
-
-	return newCommentID, nil
+	fields := []interface{}{newComment.UserID, newComment.MovieID, newComment.Content, currentTime, currentTime}
+	requiredFields := []interface{}{newComment.UserID, newComment.MovieID, newComment.Content}
+	requiredFieldMsg := "User ID, movie ID, and content are required fields"
+	return CreateDatabaseItem(newComment, insertQuery, fields, requiredFields, requiredFieldMsg)
 }
 
 func buildSearchCommentQuery(userID, movieID int, content string) string {

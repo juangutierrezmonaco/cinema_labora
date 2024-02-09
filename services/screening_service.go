@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -12,33 +11,12 @@ import (
 )
 
 func CreateScreening(newScreening models.Screening) (int, error) {
-	if newScreening.Name == nil || newScreening.MovieID == nil || newScreening.TheaterID == nil ||
-		newScreening.AvailableSeats == nil || newScreening.Showtime == nil || newScreening.Price == nil {
-		return -1, errors.New("Name, movie_id, theater_id, available_seats, showtime, and price are required fields")
-	}
-
-	stmt, err := config.DbConnection.Prepare(`
-		INSERT INTO screening(name, movie_id, theater_id, available_seats, taken_seats, showtime, price, language, views_count, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-		RETURNING id
-	`)
-	if err != nil {
-		return -1, err
-	}
-	defer stmt.Close()
-
-	var newScreeningID int
+	insertQuery := "INSERT INTO screening(name, movie_id, theater_id, available_seats, taken_seats, showtime, price, language, views_count, created_at, updated_at)	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id"
 	currentTime := time.Now().Unix()
-	err = stmt.QueryRow(
-		newScreening.Name, newScreening.MovieID, newScreening.TheaterID,
-		newScreening.AvailableSeats, pq.Array(newScreening.TakenSeats),
-		newScreening.Showtime, newScreening.Price, newScreening.Language, newScreening.ViewsCount, currentTime, currentTime,
-	).Scan(&newScreeningID)
-	if err != nil {
-		return -1, err
-	}
-
-	return newScreeningID, nil
+	fields := []interface{}{newScreening.Name, newScreening.MovieID, newScreening.TheaterID, newScreening.AvailableSeats, pq.Array(newScreening.TakenSeats), newScreening.Showtime, newScreening.Price, newScreening.Language, newScreening.ViewsCount, currentTime, currentTime}
+	requiredFields := []interface{}{newScreening.Name, newScreening.MovieID, newScreening.TheaterID, newScreening.AvailableSeats, newScreening.Showtime, newScreening.Price}
+	requiredFieldMsg := "Name, movie_id, theater_id, available_seats, showtime, and price are required fields"
+	return CreateDatabaseItem(newScreening, insertQuery, fields, requiredFields, requiredFieldMsg)
 }
 
 func buildSearchScreeningQuery(name string, showtime int64, showtimeGt int64, showtimeLt int64, price float64, priceGt float64, priceLt float64, language string, viewsCount int, viewsCountGt int, viewsCountLt int) string {

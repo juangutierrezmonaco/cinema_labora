@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -11,25 +10,14 @@ import (
 )
 
 func CreateUser(newUser models.User) (int, error) {
-	if newUser.FirstName == nil || newUser.LastName == nil || newUser.Email == nil || newUser.Password == nil || newUser.PictureURL == nil {
-		return -1, errors.New("FirstName, lastname, email, password, and pictureurl are required fields")
-	}
-
-	stmt, err := config.DbConnection.Prepare("INSERT INTO \"user\"(first_name, last_name, email, password, gender, picture_url, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id")
-	if err != nil {
-		return -1, err
-	}
-	defer stmt.Close()
-
-	var newUserID int
+	insertQuery := "INSERT INTO \"user\"(first_name, last_name, email, password, gender, picture_url, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id"
 	currentTime := time.Now().Unix()
-	err = stmt.QueryRow(newUser.FirstName, newUser.LastName, newUser.Email, newUser.Password, newUser.Gender, newUser.PictureURL, currentTime, currentTime).Scan(&newUserID)
-	if err != nil {
-		return -1, err
-	}
-
-	return newUserID, nil
+	fields := []interface{}{newUser.FirstName, newUser.LastName, newUser.Email, newUser.Password, newUser.Gender, newUser.PictureURL, currentTime, currentTime}
+	requiredFields := []interface{}{newUser.FirstName, newUser.LastName, newUser.Email, newUser.Password, newUser.PictureURL}
+	requiredFieldMsg := "FirstName, lastname, email, password, and pictureurl are required fields"
+	return CreateDatabaseItem(newUser, insertQuery, fields, requiredFields, requiredFieldMsg)
 }
+
 func buildSearchUserQuery(firstName, lastName, email, gender string) string {
 	query := "SELECT * FROM \"user\""
 	if firstName == "" && lastName == "" && email == "" && gender == "" {

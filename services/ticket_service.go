@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -11,24 +10,12 @@ import (
 )
 
 func CreateTicket(newTicket models.Ticket) (int, error) {
-	if newTicket.PickupID == nil || newTicket.UserID == nil || newTicket.ScreeningID == nil {
-		return -1, errors.New("Pickup ID, user ID, and screening ID are required fields")
-	}
-
-	stmt, err := config.DbConnection.Prepare("INSERT INTO ticket(pickup_id, user_id, screening_id, created_at) VALUES ($1, $2, $3, $4) RETURNING id")
-	if err != nil {
-		return -1, err
-	}
-	defer stmt.Close()
-
-	var newTicketID int
+	insertQuery := "INSERT INTO ticket(pickup_id, user_id, screening_id, created_at) VALUES ($1, $2, $3, $4) RETURNING id"
 	currentTime := time.Now().Unix()
-	err = stmt.QueryRow(newTicket.PickupID, newTicket.UserID, newTicket.ScreeningID, currentTime).Scan(&newTicketID)
-	if err != nil {
-		return -1, err
-	}
-
-	return newTicketID, nil
+	fields := []interface{}{newTicket.PickupID, newTicket.UserID, newTicket.ScreeningID, currentTime}
+	requiredFields := []interface{}{newTicket.PickupID, newTicket.UserID, newTicket.ScreeningID}
+	requiredFieldMsg := "Pickup ID, user ID, and screening ID are required fields"
+	return CreateDatabaseItem(newTicket, insertQuery, fields, requiredFields, requiredFieldMsg)
 }
 
 func buildSearchTicketQuery(pickupID string, userID, screeningID int) string {
