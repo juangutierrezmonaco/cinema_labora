@@ -7,6 +7,7 @@ import (
 
 	"github.com/labora/labora-golang/cinema_labora/config"
 	"github.com/labora/labora-golang/cinema_labora/models"
+	"github.com/labora/labora-golang/cinema_labora/util"
 	"github.com/lib/pq"
 )
 
@@ -64,11 +65,6 @@ func buildSearchScreeningQuery(name string, showtime int64, showtimeGt int64, sh
 	return query
 }
 
-func convertUint8ToStringArray(bytes []uint8) []string {
-	str := strings.Trim(string(bytes), "{}")
-	return strings.Split(str, ",")
-}
-
 func GetScreenings(name string, showtime int64, showtimeGt int64, showtimeLt int64, price float64, priceGt float64, priceLt float64, language string, viewsCount int, viewsCountGt int, viewsCountLt int) ([]models.Screening, error) {
 	query := buildSearchScreeningQuery(name, showtime, showtimeGt, showtimeLt, price, priceGt, priceLt, language, viewsCount, viewsCountGt, viewsCountLt)
 	stmt, err := config.DbConnection.Prepare(query)
@@ -93,7 +89,7 @@ func GetScreenings(name string, showtime int64, showtimeGt int64, showtimeLt int
 			&screening.Showtime, &screening.Price, &screening.Language,
 			&screening.ViewsCount, &screening.CreatedAt, &screening.UpdatedAt,
 		)
-		screening.TakenSeats = convertUint8ToStringArray(auxTakenSeats)
+		screening.TakenSeats = util.ConvertSqlUint8ToStringArray(auxTakenSeats)
 		if err != nil {
 			return nil, err
 		}
@@ -122,7 +118,7 @@ func GetScreeningByID(id int) (*models.Screening, error) {
 		&screening.Showtime, &screening.Price, &screening.Language,
 		&screening.ViewsCount, &screening.CreatedAt, &screening.UpdatedAt,
 	)
-	screening.TakenSeats = convertUint8ToStringArray(auxTakenSeats)
+	screening.TakenSeats = util.ConvertSqlUint8ToStringArray(auxTakenSeats)
 	if err != nil {
 		return nil, err
 	}
@@ -151,7 +147,7 @@ func GetScreeningByMovieIdOrTheaterId(id int, isSearchingByMovie bool) (*models.
 		&screening.Showtime, &screening.Price, &screening.Language,
 		&screening.ViewsCount, &screening.CreatedAt, &screening.UpdatedAt,
 	)
-	screening.TakenSeats = convertUint8ToStringArray(auxTakenSeats)
+	screening.TakenSeats = util.ConvertSqlUint8ToStringArray(auxTakenSeats)
 	if err != nil {
 		return nil, err
 	}

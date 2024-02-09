@@ -3,6 +3,7 @@ package util
 import (
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -34,7 +35,7 @@ type AllEnvData struct {
 
 var EnvData AllEnvData
 
-const isProd = true
+const isProd = false
 
 func LoadEnv() error {
 	envPath := "./development.env"
@@ -84,4 +85,9 @@ func ParseTime(unixTime int64) string {
 	time := time.Unix(unixTime, 0)
 	timeStr := time.Format("02-01-2006 15:04:05")
 	return timeStr
+}
+
+func ConvertSqlUint8ToStringArray(bytes []uint8) []string {
+	str := strings.Trim(string(bytes), "{}")
+	return strings.Split(str, ",")
 }
