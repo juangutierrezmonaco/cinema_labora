@@ -2,7 +2,6 @@ package services
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/labora/labora-golang/cinema_labora/config"
@@ -19,29 +18,20 @@ func CreateUser(newUser models.User) (int, error) {
 }
 
 func buildSearchUserQuery(firstName, lastName, email, gender string) string {
-	query := "SELECT * FROM \"user\""
-	if firstName == "" && lastName == "" && email == "" && gender == "" {
-		return query
-	}
-
-	var subqueries []string
+	qb := NewQueryBuilder("\"user\"")
 	if firstName != "" {
-		subqueries = append(subqueries, fmt.Sprintf("first_name ILIKE '%%%s%%'", firstName))
+		qb.AddCondition(fmt.Sprintf("first_name ILIKE '%%%s%%'", firstName))
 	}
 	if lastName != "" {
-		subqueries = append(subqueries, fmt.Sprintf("last_name ILIKE '%%%s%%'", lastName))
+		qb.AddCondition(fmt.Sprintf("last_name ILIKE '%%%s%%'", lastName))
 	}
 	if email != "" {
-		subqueries = append(subqueries, fmt.Sprintf("email ILIKE '%%%s%%'", email))
+		qb.AddCondition(fmt.Sprintf("email ILIKE '%%%s%%'", email))
 	}
 	if gender != "" {
-		subqueries = append(subqueries, fmt.Sprintf("gender ILIKE '%%%s%%'", gender))
+		qb.AddCondition(fmt.Sprintf("gender ILIKE '%%%s%%'", gender))
 	}
-
-	if len(subqueries) > 0 {
-		query += " WHERE " + strings.Join(subqueries, " AND ")
-	}
-	return query
+	return qb.BuildQuery()
 }
 
 func GetUsers(firstName, lastName, email, gender string) ([]models.User, error) {

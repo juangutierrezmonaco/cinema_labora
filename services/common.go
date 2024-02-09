@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/labora/labora-golang/cinema_labora/config"
 )
@@ -26,4 +27,27 @@ func CreateDatabaseItem(newItem interface{}, insertQuery string, fields []interf
 	}
 
 	return newItemID, nil
+}
+
+type QueryBuilder struct {
+	Table      string
+	Conditions []string
+}
+
+func NewQueryBuilder(table string) *QueryBuilder {
+	return &QueryBuilder{
+		Table: table,
+	}
+}
+
+func (qb *QueryBuilder) AddCondition(condition string) {
+	qb.Conditions = append(qb.Conditions, condition)
+}
+
+func (qb *QueryBuilder) BuildQuery() string {
+	query := "SELECT * FROM " + qb.Table
+	if len(qb.Conditions) > 0 {
+		query += " WHERE " + strings.Join(qb.Conditions, " AND ")
+	}
+	return query
 }

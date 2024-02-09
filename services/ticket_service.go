@@ -2,7 +2,6 @@ package services
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/labora/labora-golang/cinema_labora/config"
@@ -19,26 +18,17 @@ func CreateTicket(newTicket models.Ticket) (int, error) {
 }
 
 func buildSearchTicketQuery(pickupID string, userID, screeningID int) string {
-	query := "SELECT * FROM ticket"
-	if pickupID == "" && userID == 0 && screeningID == 0 {
-		return query
-	}
-
-	var subqueries []string
+	qb := NewQueryBuilder("ticket")
 	if pickupID != "" {
-		subqueries = append(subqueries, fmt.Sprintf("pickup_id = '%s'", pickupID))
+		qb.AddCondition(fmt.Sprintf("pickup_id = '%s'", pickupID))
 	}
 	if userID != 0 {
-		subqueries = append(subqueries, fmt.Sprintf("user_id = %d", userID))
+		qb.AddCondition(fmt.Sprintf("user_id = %d", userID))
 	}
 	if screeningID != 0 {
-		subqueries = append(subqueries, fmt.Sprintf("screening_id = %d", screeningID))
+		qb.AddCondition(fmt.Sprintf("screening_id = %d", screeningID))
 	}
-
-	if len(subqueries) > 0 {
-		query += " WHERE " + strings.Join(subqueries, " AND ")
-	}
-	return query
+	return qb.BuildQuery()
 }
 
 func GetTickets(pickupID string, userID, screeningID int) ([]models.Ticket, error) {

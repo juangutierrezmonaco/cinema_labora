@@ -2,7 +2,6 @@ package services
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/labora/labora-golang/cinema_labora/config"
@@ -19,26 +18,17 @@ func CreateComment(newComment models.Comment) (int, error) {
 }
 
 func buildSearchCommentQuery(userID, movieID int, content string) string {
-	query := "SELECT * FROM comment"
-	if userID == 0 && movieID == 0 && content == "" {
-		return query
-	}
-
-	var subqueries []string
+	qb := NewQueryBuilder("comment")
 	if userID != 0 {
-		subqueries = append(subqueries, fmt.Sprintf("user_id = %d", userID))
+		qb.AddCondition(fmt.Sprintf("user_id = %d", userID))
 	}
 	if movieID != 0 {
-		subqueries = append(subqueries, fmt.Sprintf("movie_id = %d", movieID))
+		qb.AddCondition(fmt.Sprintf("movie_id = %d", movieID))
 	}
 	if content != "" {
-		subqueries = append(subqueries, fmt.Sprintf("content ILIKE '%%%s%%'", content))
+		qb.AddCondition(fmt.Sprintf("content ILIKE '%%%s%%'", content))
 	}
-
-	if len(subqueries) > 0 {
-		query += " WHERE " + strings.Join(subqueries, " AND ")
-	}
-	return query
+	return qb.BuildQuery()
 }
 
 func GetComments(userID, movieID int, content string) ([]models.Comment, error) {

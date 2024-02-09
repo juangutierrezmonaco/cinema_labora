@@ -2,7 +2,6 @@ package services
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/labora/labora-golang/cinema_labora/config"
@@ -19,27 +18,20 @@ func CreateTheater(newTheater models.Theater) (int, error) {
 }
 
 func buildSearchTheaterQuery(name string, capacity int, capacityGt int, capacityLt int) string {
-	query := "SELECT * FROM theater"
-	if name == "" && capacity == 0 && capacityGt == 0 && capacityLt == 0 {
-		return query
-	}
-	var subqueries []string
+	qb := NewQueryBuilder("theater")
 	if name != "" {
-		subqueries = append(subqueries, fmt.Sprintf("name ILIKE '%%%s%%'", name))
+		qb.AddCondition(fmt.Sprintf("name ILIKE '%%%s%%'", name))
 	}
 	if capacity > 0 {
-		subqueries = append(subqueries, fmt.Sprintf("capacity = %d", capacity))
+		qb.AddCondition(fmt.Sprintf("capacity = %d", capacity))
 	}
 	if capacityGt > 0 {
-		subqueries = append(subqueries, fmt.Sprintf("capacity > %d", capacityGt))
+		qb.AddCondition(fmt.Sprintf("capacity > %d", capacityGt))
 	}
 	if capacityLt > 0 {
-		subqueries = append(subqueries, fmt.Sprintf("capacity < %d", capacityLt))
+		qb.AddCondition(fmt.Sprintf("capacity < %d", capacityLt))
 	}
-	if len(subqueries) > 0 {
-		query += " WHERE " + strings.Join(subqueries, " AND ")
-	}
-	return query
+	return qb.BuildQuery()
 }
 
 func GetTheaters(name string, capacity int, capacityGt int, capacityLt int) ([]models.Theater, error) {

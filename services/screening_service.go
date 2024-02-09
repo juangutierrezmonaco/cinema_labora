@@ -2,7 +2,6 @@ package services
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/labora/labora-golang/cinema_labora/config"
@@ -21,48 +20,41 @@ func CreateScreening(newScreening models.Screening) (int, error) {
 }
 
 func buildSearchScreeningQuery(name string, showtime int64, showtimeGt int64, showtimeLt int64, price float64, priceGt float64, priceLt float64, language string, viewsCount int, viewsCountGt int, viewsCountLt int) string {
-	query := "SELECT * FROM screening"
-	if name == "" && showtime == 0 && showtimeGt == 0 && showtimeLt == 0 && price == 0 && priceGt == 0 && priceLt == 0 && language == "" && viewsCount == 0 && viewsCountGt == 0 && viewsCountLt == 0 {
-		return query
-	}
-	var subqueries []string
+	qb := NewQueryBuilder("screening")
 	if name != "" {
-		subqueries = append(subqueries, fmt.Sprintf("name ILIKE '%%%s%%'", name))
+		qb.AddCondition(fmt.Sprintf("name ILIKE '%%%s%%'", name))
 	}
 	if showtime != 0 {
-		subqueries = append(subqueries, fmt.Sprintf("showtime = %d", showtime))
+		qb.AddCondition(fmt.Sprintf("showtime = %d", showtime))
 	}
 	if showtimeGt != 0 {
-		subqueries = append(subqueries, fmt.Sprintf("showtime > %d", showtimeGt))
+		qb.AddCondition(fmt.Sprintf("showtime > %d", showtimeGt))
 	}
 	if showtimeLt != 0 {
-		subqueries = append(subqueries, fmt.Sprintf("showtime < %d", showtimeLt))
+		qb.AddCondition(fmt.Sprintf("showtime < %d", showtimeLt))
 	}
 	if price != 0 {
-		subqueries = append(subqueries, fmt.Sprintf("price = %f", price))
+		qb.AddCondition(fmt.Sprintf("price = %f", price))
 	}
 	if priceGt != 0 {
-		subqueries = append(subqueries, fmt.Sprintf("price > %f", priceGt))
+		qb.AddCondition(fmt.Sprintf("price > %f", priceGt))
 	}
 	if priceLt != 0 {
-		subqueries = append(subqueries, fmt.Sprintf("price < %f", priceLt))
+		qb.AddCondition(fmt.Sprintf("price < %f", priceLt))
 	}
 	if language != "" {
-		subqueries = append(subqueries, fmt.Sprintf("language = '%s'", language))
+		qb.AddCondition(fmt.Sprintf("language = '%s'", language))
 	}
 	if viewsCount != 0 {
-		subqueries = append(subqueries, fmt.Sprintf("views_count = %d", viewsCount))
+		qb.AddCondition(fmt.Sprintf("views_count = %d", viewsCount))
 	}
 	if viewsCountGt != 0 {
-		subqueries = append(subqueries, fmt.Sprintf("views_count > %d", viewsCountGt))
+		qb.AddCondition(fmt.Sprintf("views_count > %d", viewsCountGt))
 	}
 	if viewsCountLt != 0 {
-		subqueries = append(subqueries, fmt.Sprintf("views_count < %d", viewsCountLt))
+		qb.AddCondition(fmt.Sprintf("views_count < %d", viewsCountLt))
 	}
-	if len(subqueries) > 0 {
-		query += " WHERE " + strings.Join(subqueries, " AND ")
-	}
-	return query
+	return qb.BuildQuery()
 }
 
 func GetScreenings(name string, showtime int64, showtimeGt int64, showtimeLt int64, price float64, priceGt float64, priceLt float64, language string, viewsCount int, viewsCountGt int, viewsCountLt int) ([]models.Screening, error) {
